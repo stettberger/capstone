@@ -244,10 +244,17 @@ ifneq (,$(findstring xcore,$(CAPSTONE_ARCHS)))
 endif
 
 DEP_RISCV =
+DEP_RISCV += arch/riscv/RiscvGenAsmWriter.inc
+DEP_RISCV += arch/riscv/RiscvGenDisassemblerTables.inc
+DEP_RISCV += arch/riscv/RiscvGenInstrInfo.inc
+DEP_RISCV += arch/riscv/RiscvGenRegisterInfo.inc
+DEP_RISCV += arch/riscv/RiscvGenSubtargetInfo.inc
 
 ifneq (,$(findstring riscv,$(CAPSTONE_ARCHS)))
-CFLAGS += -DCAPSTONE_HAS_RISCV
+	CFLAGS += -DCAPSTONE_HAS_RISCV
 	LIBOBJ_RISCV += $(OBJDIR)/arch/riscv/RiscvDisassembler.o
+	LIBOBJ_RISCV += $(OBJDIR)/arch/riscv/RiscvInstPrinter.o
+	LIBOBJ_RISCV += $(OBJDIR)/arch/riscv/RiscvMapping.o
 	LIBOBJ_RISCV += $(OBJDIR)/arch/riscv/RiscvModule.o
 endif
 

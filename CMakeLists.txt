@@ -274,12 +274,21 @@ if (CAPSTONE_RISCV_SUPPORT)
     add_definitions(-DCAPSTONE_HAS_RISCV)
     set(SOURCES_RISCV
         arch/riscv/RiscvDisassembler.c
+        arch/riscv/RiscvInstPrinter.c
+        arch/riscv/RiscvMapping.c
         arch/riscv/RiscvModule.c
         )
     set(HEADERS_RISCV
         arch/riscv/RiscvDisassembler.h
+        arch/riscv/RiscvGenAsmWriter.inc
+        arch/riscv/RiscvGenDisassemblerTables.inc
+        arch/riscv/RiscvGenInstrInfo.inc
+        arch/riscv/RiscvGenRegisterInfo.inc
+        arch/riscv/RiscvGenSubtargetInfo.inc
+        arch/riscv/RiscvInstPrinter.h
+        arch/riscv/RiscvMapping.h
         )
-    set(TEST_SOURCES ${TEST_SOURCES} test_riscv.c)
+    set(TEST_SOURCES ${TEST_SOURCES} test_riscv.c)      
 endif ()  
 
 if (CAPSTONE_OSXKERNEL_SUPPORT)

@@ -64,7 +64,7 @@ extern void PPC_enable(void);
 extern void Sparc_enable(void);
 extern void SystemZ_enable(void);
 extern void XCore_enable(void);
-extern void Riscv_enable(void);
+extern void RISCV_enable(void);
 
 static void archs_enable(void)
 {
@@ -98,7 +98,7 @@ static void archs_enable(void)
 	XCore_enable();
 #endif
 #ifdef CAPSTONE_HAS_RISCV
-	Riscv_enable();
+	RISCV_enable();
 #endif
 
 	initialized = true;

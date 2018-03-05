@@ -11,59 +11,94 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "RISCVInstPrinter.h"
-#include "MCTargetDesc/RISCVBaseInfo.h"
-#include "llvm/MC/MCAsmInfo.h"
-#include "llvm/MC/MCExpr.h"
-#include "llvm/MC/MCInst.h"
-#include "llvm/MC/MCSymbol.h"
-#include "llvm/Support/ErrorHandling.h"
-#include "llvm/Support/FormattedStream.h"
-using namespace llvm;
+#ifdef CAPSTONE_HAS_RISCV
 
-#define DEBUG_TYPE "asm-printer"
+#include <platform.h>
+#include <stdlib.h>
+#include <stdio.h>	// debug
+#include <string.h>
+#include <assert.h>
 
-// Include the auto-generated portion of the assembly writer.
-#include "RISCVGenAsmWriter.inc"
+#include "../../MCInst.h"
+#include "../../utils.h"
+#include "../../SStream.h"
+#include "../../MCRegisterInfo.h"
+#include "RiscvMapping.h"
 
-void RISCVInstPrinter::printInst(const MCInst *MI, raw_ostream &O,
-                                 StringRef Annot, const MCSubtargetInfo &STI) {
-  printInstruction(MI, O);
-  printAnnotation(O, Annot);
+#include "RiscvInstPrinter.h"
+
+#define GET_INSTRINFO_ENUM
+#include "RiscvGenInstrInfo.inc"
+
+static const char *getRegisterName(unsigned RegNo);
+static void printInstruction(MCInst *MI, SStream *O, const MCRegisterInfo *MRI);
+extern 
+
+void RISCV_printInst(MCInst *MI, SStream *O, void *info)
+{
+	printInstruction(MI, O, NULL);
+	// printAnnotation(O, Annot);
 }
 
-void RISCVInstPrinter::printRegName(raw_ostream &O, unsigned RegNo) const {
-  O << getRegisterName(RegNo);
+static void printRegName(SStream *O, unsigned RegNo)
+{
+	SStream_concat(O, "$%s", getRegisterName(RegNo));
 }
 
-void RISCVInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
-                                    raw_ostream &O, const char *Modifier) {
-  assert((Modifier == 0 || Modifier[0] == 0) && "No modifiers supported");
-  const MCOperand &MO = MI->getOperand(OpNo);
+// TODO: Add the instruction detail parts
+static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
+{
+	MCOperand *Op = MCInst_getOperand(MI, OpNo);
 
-  if (MO.isReg()) {
-    printRegName(O, MO.getReg());
-    return;
-  }
+	if (MCOperand_isReg(Op)) {
+		unsigned int reg = MCOperand_getReg(Op);
+		printRegName(O, reg);
+		return;
+	}
 
-  if (MO.isImm()) {
-    O << MO.getImm();
-    return;
-  }
+	if (MCOperand_isImm(Op)) {
+		int64_t imm = MCOperand_getImm(Op);
+		if (imm >= 0) {
+			if (imm > HEX_THRESHOLD)
+				SStream_concat(O, "0x%x", (unsigned int)imm);
+			else
+				SStream_concat(O, "%u", (unsigned int)imm);
+		} else {
+			if (imm < -HEX_THRESHOLD)
+				SStream_concat(O, "-0x%x", (unsigned int)-imm);
+			else
+				SStream_concat(O, "-%u", (unsigned int)-imm);
+		}
+		return;
+	}
 
-  assert(MO.isExpr() && "Unknown operand kind in printOperand");
-  MO.getExpr()->print(O, &MAI);
+	assert(0 && "Unknown operand kind in printOperand");
 }
 
-void RISCVInstPrinter::printFenceArg(const MCInst *MI, unsigned OpNo,
-                                     raw_ostream &O) {
-  unsigned FenceArg = MI->getOperand(OpNo).getImm();
-  if ((FenceArg & RISCVFenceField::I) != 0)
-    O << 'i';
-  if ((FenceArg & RISCVFenceField::O) != 0)
-    O << 'o';
-  if ((FenceArg & RISCVFenceField::R) != 0)
-    O << 'r';
-  if ((FenceArg & RISCVFenceField::W) != 0)
-    O << 'w';
+enum
+{
+	RISCVFenceField_I = 8,
+	RISCVFenceField_O = 4,
+	RISCVFenceField_R = 2,
+	RISCVFenceField_W = 1,
+};
+
+void printFenceArg(MCInst *MI, unsigned OpNo, SStream *O)
+{
+	MCOperand *Op = MCInst_getOperand(MI, OpNo);
+
+	int64_t FenceArg = MCOperand_getImm(Op);
+	if ((FenceArg & RISCVFenceField_I) != 0)
+		SStream_concat(O,"i");
+	if ((FenceArg & RISCVFenceField_O) != 0)
+		SStream_concat(O,"o");
+	if ((FenceArg & RISCVFenceField_R) != 0)
+		SStream_concat(O,"r");
+	if ((FenceArg & RISCVFenceField_W) != 0)
+		SStream_concat(O,"w");
 }
+
+#define PRINT_ALIAS_INSTR
+#include "RiscvGenAsmWriter.inc"
+
+#endif

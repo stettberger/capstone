@@ -1047,43 +1047,43 @@ static const insn_map insns[] = {
 	{
 		RISCV_AUIPC, RISCV_INS_AUIPC,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {RISCV_GRP_LOAD_IMM}, 0, 0
 #endif
 	},
 	{
 		RISCV_BEQ, RISCV_INS_BEQ,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_BGE, RISCV_INS_BGE,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_BGEU, RISCV_INS_BGEU,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_BLT, RISCV_INS_BLT,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_BLTU, RISCV_INS_BLTU,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_BNE, RISCV_INS_BNE,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
@@ -1149,13 +1149,13 @@ static const insn_map insns[] = {
 	{
 		RISCV_EBREAK, RISCV_INS_EBREAK,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {RISCV_GRP_INT}, 0, 0
 #endif
 	},
 	{
 		RISCV_ECALL, RISCV_INS_ECALL,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {RISCV_GRP_INT}, 0, 0
 #endif
 	},
 	{
@@ -1545,13 +1545,13 @@ static const insn_map insns[] = {
 	{
 		RISCV_JAL, RISCV_INS_JAL,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 1, 0
 #endif
 	},
 	{
 		RISCV_JALR, RISCV_INS_JALR,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {0}, 0, 1
 #endif
 	},
 	{
@@ -1641,7 +1641,7 @@ static const insn_map insns[] = {
 	{
 		RISCV_LUI, RISCV_INS_LUI,
 #ifndef CAPSTONE_DIET
-		{0}, {0}, {0}, 0, 0
+		{0}, {0}, {RISCV_GRP_LOAD_IMM}, 0, 0
 #endif
 	},
 	{
@@ -1969,7 +1969,20 @@ void RISCV_get_insn_id(cs_struct *h, cs_insn *insn, unsigned int id)
 
 		if (h->detail) {
 #ifndef CAPSTONE_DIET
-			// TODO: add the detail
+			memcpy(insn->detail->regs_read, insns[i].regs_use, sizeof(insns[i].regs_use));
+			insn->detail->regs_read_count = (uint8_t)count_positive(insns[i].regs_use);
+
+			memcpy(insn->detail->regs_write, insns[i].regs_mod, sizeof(insns[i].regs_mod));
+			insn->detail->regs_write_count = (uint8_t)count_positive(insns[i].regs_mod);
+
+			memcpy(insn->detail->groups, insns[i].groups, sizeof(insns[i].groups));
+			insn->detail->groups_count = (uint8_t)count_positive(insns[i].groups);
+
+			if (insns[i].branch || insns[i].indirect_branch) {
+				// this insn also belongs to JUMP group. add JUMP group
+				insn->detail->groups[insn->detail->groups_count] = MIPS_GRP_JUMP;
+				insn->detail->groups_count++;
+			}
 #endif
 		}
 	}
@@ -2306,7 +2319,7 @@ static const name_map group_name_maps[] = {
 	{ RISCV_GRP_RET, "ret" },
 	{ RISCV_GRP_INT, "int" },
 	{ RISCV_GRP_IRET, "iret" },
-	
+
 
 	// architecture-specific groups
 	{ RISCV_GRP_LOAD_IMM, "load_imm" },
@@ -2321,7 +2334,7 @@ const char *RISCV_group_name(csh handle, unsigned int id)
 		return NULL;
 
 	if (id >= RISCV_GRP_ARCH_START)
-		return group_name_maps[id - RISCV_GRP_ARCH_START + RISCV_GRP_GEN_ENDING - 1].name;
+		return group_name_maps[id - RISCV_GRP_ARCH_START + RISCV_GRP_GEN_ENDING].name;
 	else
 		return group_name_maps[id].name;
 #else

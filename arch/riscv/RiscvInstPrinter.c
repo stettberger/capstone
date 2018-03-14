@@ -45,18 +45,28 @@ static void printRegName(SStream *O, unsigned RegNo)
 	SStream_concat(O, "$%s", getRegisterName(RegNo));
 }
 
-// TODO: Add the instruction detail parts
 static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
 {
-	MCOperand *Op = MCInst_getOperand(MI, OpNo);
+	MCOperand *Op;
 
+	if (OpNo >= MI->size)
+		return;
+
+	Op = MCInst_getOperand(MI, OpNo);
 	if (MCOperand_isReg(Op)) {
 		unsigned int reg = MCOperand_getReg(Op);
 		printRegName(O, reg);
+		if (MI->csh->detail) {
+			if (MI->csh->doing_mem) {
+				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].mem.base = reg;
+			} else {
+				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].type = RISCV_OP_REG;
+				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].reg = reg;
+				MI->flat_insn->detail->riscv.op_count++;
+			}
+		}
 		return;
-	}
-
-	if (MCOperand_isImm(Op)) {
+	} else if (MCOperand_isImm(Op)) {
 		int64_t imm = MCOperand_getImm(Op);
 		if (imm >= 0) {
 			if (imm > HEX_THRESHOLD)
@@ -68,6 +78,11 @@ static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
 				SStream_concat(O, "-0x%x", (unsigned int)-imm);
 			else
 				SStream_concat(O, "-%u", (unsigned int)-imm);
+		}
+		if (MI->csh->detail) {
+			MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].type = RISCV_OP_IMM;
+			MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].imm = imm;
+			MI->flat_insn->detail->riscv.op_count++;
 		}
 		return;
 	}

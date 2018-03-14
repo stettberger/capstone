@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 #include <platform.h>
 
@@ -148,7 +149,7 @@ static DecodeStatus DecodeSImmOperand_12(MCInst *Inst, uint64_t Imm,
 										 int64_t Address,
 										 const MCRegisterInfo *Decoder) {
 	// Sign-extend the number in the bottom N = 12 bits of Imm
-	MCOperand_CreateImm0(Inst, SignExtend64(Imm, 12));
+	MCOperand_CreateImm0(Inst, SignExtend32(Imm, 12)); // TODO: support 64 bits
 	return MCDisassembler_Success;
 }
 
@@ -158,7 +159,7 @@ static DecodeStatus DecodeSImmOperandAndLsl1_13(MCInst *Inst, uint64_t Imm,
 	// Sign-extend the number in the bottom N bits of Imm after accounting for
 	// the fact that the N=13 bit immediate is stored in N-1 bits (the LSB is
 	// always zero)
-	MCOperand_CreateImm0(Inst, SignExtend64((Imm << 1), 13));
+	MCOperand_CreateImm0(Inst, SignExtend32((Imm << 1), 13)); // TODO: support 64 bits
 	return MCDisassembler_Success;
 }
 
@@ -168,7 +169,7 @@ static DecodeStatus DecodeSImmOperandAndLsl1_21(MCInst *Inst, uint64_t Imm,
 	// Sign-extend the number in the bottom N bits of Imm after accounting for
 	// the fact that the N=21 bit immediate is stored in N-1 bits (the LSB is
 	// always zero)
-	MCOperand_CreateImm0(Inst, SignExtend64((Imm << 1), 21));
+	MCOperand_CreateImm0(Inst, SignExtend32((Imm << 1), 21)); // TODO: support 64 bits
 	return MCDisassembler_Success;
 }
 
@@ -195,6 +196,10 @@ static DecodeStatus RISCVDisassembler_getInstruction(
 {
 	uint32_t Insn;
 	DecodeStatus Result;
+
+	if (instr->flat_insn->detail) {
+		memset(instr->flat_insn->detail, 0, sizeof(cs_detail));
+	}
 
 	// TODO: although assuming 4-byte instructions is sufficient for RV32 and
 	// RV64, this will need modification when supporting the compressed

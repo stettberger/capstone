@@ -15,15 +15,7 @@ typedef enum riscv_op_type {
 	RISCV_OP_INVALID = 0, // = CS_OP_INVALID (Uninitialized).
 	RISCV_OP_REG, // = CS_OP_REG (Register operand).
 	RISCV_OP_IMM, // = CS_OP_IMM (Immediate operand).
-	RISCV_OP_MEM, // = CS_OP_MEM (Memory operand).
 } riscv_op_type;
-
-// Instruction's operand referring to memory
-// This is associated with RISCV_OP_MEM operand type above
-typedef struct riscv_op_mem {
-	unsigned int base;	// base register
-	int64_t disp;	// displacement/offset value
-} riscv_op_mem;
 
 // Instruction operand
 typedef struct cs_riscv_op {
@@ -31,7 +23,6 @@ typedef struct cs_riscv_op {
 	union {
 		unsigned int reg;	// register value for REG operand
 		int64_t imm;		// immediate value for IMM operand
-		riscv_op_mem mem;	// base/index/scale/disp value for MEM operand
 	};
 } cs_riscv_op;
 

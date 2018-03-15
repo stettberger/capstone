@@ -57,13 +57,10 @@ static void printOperand(MCInst *MI, unsigned OpNo, SStream *O)
 		unsigned int reg = MCOperand_getReg(Op);
 		printRegName(O, reg);
 		if (MI->csh->detail) {
-			if (MI->csh->doing_mem) {
-				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].mem.base = reg;
-			} else {
-				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].type = RISCV_OP_REG;
-				MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].reg = reg;
-				MI->flat_insn->detail->riscv.op_count++;
-			}
+
+			MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].type = RISCV_OP_REG;
+			MI->flat_insn->detail->riscv.operands[MI->flat_insn->detail->riscv.op_count].reg = reg;
+			MI->flat_insn->detail->riscv.op_count++;
 		}
 		return;
 	} else if (MCOperand_isImm(Op)) {

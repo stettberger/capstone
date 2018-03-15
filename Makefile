@@ -455,10 +455,13 @@ TESTS += test_basic.static test_detail.static test_arm.static test_arm64.static
 TESTS += test_mips.static test_ppc.static test_sparc.static
 TESTS += test_systemz.static test_x86.static test_xcore.static test_riscv.static
 TESTS += test_skipdata test_skipdata.static test_iter.static
+ifndef CAPSTONE_TEST_DATA_DIR
+CAPSTONE_TEST_DATA_DIR=./tests/data
+endif
 check:
 	@for t in $(TESTS); do \
 		echo Check $$t ... ; \
-		LD_LIBRARY_PATH=./tests ./tests/$$t > /dev/null && echo OK || echo FAILED; \
+		CAPSTONE_TEST_DATA_DIR=$(CAPSTONE_TEST_DATA_DIR) LD_LIBRARY_PATH=./tests ./tests/$$t > /dev/null && echo OK || echo FAILED; \
 	done
 
 $(OBJDIR)/%.o: %.c

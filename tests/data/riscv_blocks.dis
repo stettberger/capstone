@@ -1,0 +1,190 @@
+
+riscv_blocks.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+42000000 <_boot>:
+42000000:	00000117          	auipc	sp,0x0
+42000004:	6b010113          	addi	sp,sp,1712 # 420006b0 <_stack>
+42000008:	00000513          	addi	a0,zero,0
+4200000c:	00000593          	addi	a1,zero,0
+42000010:	120000ef          	jal	ra,42000130 <main>
+
+Disassembly of section .text.rand:
+
+42000014 <rand>:
+42000014:	ff010113          	addi	sp,sp,-16
+42000018:	00812623          	sw	s0,12(sp)
+4200001c:	01010413          	addi	s0,sp,16
+42000020:	420007b7          	lui	a5,0x42000
+42000024:	2ac7a703          	lw	a4,684(a5) # 420002ac <seed>
+42000028:	41c657b7          	lui	a5,0x41c65
+4200002c:	e6d78793          	addi	a5,a5,-403 # 41c64e6d <STACK_SIZE+0x41c64a6d>
+42000030:	02f70733          	mul	a4,a4,a5
+42000034:	420007b7          	lui	a5,0x42000
+42000038:	2ae7a623          	sw	a4,684(a5) # 420002ac <seed>
+4200003c:	420007b7          	lui	a5,0x42000
+42000040:	2ac7a703          	lw	a4,684(a5) # 420002ac <seed>
+42000044:	000037b7          	lui	a5,0x3
+42000048:	03978793          	addi	a5,a5,57 # 3039 <STACK_SIZE+0x2c39>
+4200004c:	00f70733          	add	a4,a4,a5
+42000050:	420007b7          	lui	a5,0x42000
+42000054:	2ae7a623          	sw	a4,684(a5) # 420002ac <seed>
+42000058:	420007b7          	lui	a5,0x42000
+4200005c:	2ac7a783          	lw	a5,684(a5) # 420002ac <seed>
+42000060:	00078513          	addi	a0,a5,0
+42000064:	00c12403          	lw	s0,12(sp)
+42000068:	01010113          	addi	sp,sp,16
+4200006c:	00008067          	jalr	zero,0(ra)
+42000070:	0000                	unimp
+
+Disassembly of section .text.draw_block:
+
+42000074 <draw_block>:
+42000074:	fc010113          	addi	sp,sp,-64
+42000078:	02812e23          	sw	s0,60(sp)
+4200007c:	04010413          	addi	s0,sp,64
+42000080:	fca42e23          	sw	a0,-36(s0)
+42000084:	fcb42c23          	sw	a1,-40(s0)
+42000088:	fcc42a23          	sw	a2,-44(s0)
+4200008c:	fcd42823          	sw	a3,-48(s0)
+42000090:	fce42623          	sw	a4,-52(s0)
+42000094:	fd842783          	lw	a5,-40(s0)
+42000098:	fef42423          	sw	a5,-24(s0)
+4200009c:	06c0006f          	jal	zero,42000108 <draw_block+0x94>
+420000a0:	fdc42783          	lw	a5,-36(s0)
+420000a4:	fef42623          	sw	a5,-20(s0)
+420000a8:	0400006f          	jal	zero,420000e8 <draw_block+0x74>
+420000ac:	fe842703          	lw	a4,-24(s0)
+420000b0:	000017b7          	lui	a5,0x1
+420000b4:	c8078793          	addi	a5,a5,-896 # c80 <STACK_SIZE+0x880>
+420000b8:	02f707b3          	mul	a5,a4,a5
+420000bc:	00078713          	addi	a4,a5,0
+420000c0:	fec42783          	lw	a5,-20(s0)
+420000c4:	00279793          	slli	a5,a5,0x2
+420000c8:	00f70733          	add	a4,a4,a5
+420000cc:	400007b7          	lui	a5,0x40000
+420000d0:	00f707b3          	add	a5,a4,a5
+420000d4:	fcc42703          	lw	a4,-52(s0)
+420000d8:	00e7a023          	sw	a4,0(a5) # 40000000 <STACK_SIZE+0x3ffffc00>
+420000dc:	fec42783          	lw	a5,-20(s0)
+420000e0:	00178793          	addi	a5,a5,1
+420000e4:	fef42623          	sw	a5,-20(s0)
+420000e8:	fdc42703          	lw	a4,-36(s0)
+420000ec:	fd442783          	lw	a5,-44(s0)
+420000f0:	00f707b3          	add	a5,a4,a5
+420000f4:	fec42703          	lw	a4,-20(s0)
+420000f8:	faf71ae3          	bne	a4,a5,420000ac <draw_block+0x38>
+420000fc:	fe842783          	lw	a5,-24(s0)
+42000100:	00178793          	addi	a5,a5,1
+42000104:	fef42423          	sw	a5,-24(s0)
+42000108:	fd842703          	lw	a4,-40(s0)
+4200010c:	fd042783          	lw	a5,-48(s0)
+42000110:	00f707b3          	add	a5,a4,a5
+42000114:	fe842703          	lw	a4,-24(s0)
+42000118:	f8f714e3          	bne	a4,a5,420000a0 <draw_block+0x2c>
+4200011c:	00000013          	addi	zero,zero,0
+42000120:	03c12403          	lw	s0,60(sp)
+42000124:	04010113          	addi	sp,sp,64
+42000128:	00008067          	jalr	zero,0(ra)
+4200012c:	0000                	unimp
+
+Disassembly of section .text.main:
+
+42000130 <main>:
+42000130:	fd010113          	addi	sp,sp,-48
+42000134:	02112623          	sw	ra,44(sp)
+42000138:	02812423          	sw	s0,40(sp)
+4200013c:	03010413          	addi	s0,sp,48
+42000140:	fca42e23          	sw	a0,-36(s0)
+42000144:	fcb42c23          	sw	a1,-40(s0)
+42000148:	420007b7          	lui	a5,0x42000
+4200014c:	00100713          	addi	a4,zero,1
+42000150:	2ae7a623          	sw	a4,684(a5) # 420002ac <seed>
+42000154:	00000713          	addi	a4,zero,0
+42000158:	1e000693          	addi	a3,zero,480
+4200015c:	32000613          	addi	a2,zero,800
+42000160:	00000593          	addi	a1,zero,0
+42000164:	00000513          	addi	a0,zero,0
+42000168:	f0dff0ef          	jal	ra,42000074 <draw_block>
+4200016c:	00ff0737          	lui	a4,0xff0
+42000170:	06400693          	addi	a3,zero,100
+42000174:	06400613          	addi	a2,zero,100
+42000178:	00000593          	addi	a1,zero,0
+4200017c:	00000513          	addi	a0,zero,0
+42000180:	ef5ff0ef          	jal	ra,42000074 <draw_block>
+42000184:	000107b7          	lui	a5,0x10
+42000188:	f0078713          	addi	a4,a5,-256 # ff00 <STACK_SIZE+0xfb00>
+4200018c:	06400693          	addi	a3,zero,100
+42000190:	06400613          	addi	a2,zero,100
+42000194:	00000593          	addi	a1,zero,0
+42000198:	2bc00513          	addi	a0,zero,700
+4200019c:	ed9ff0ef          	jal	ra,42000074 <draw_block>
+420001a0:	0ff00713          	addi	a4,zero,255
+420001a4:	06400693          	addi	a3,zero,100
+420001a8:	06400613          	addi	a2,zero,100
+420001ac:	17c00593          	addi	a1,zero,380
+420001b0:	2bc00513          	addi	a0,zero,700
+420001b4:	ec1ff0ef          	jal	ra,42000074 <draw_block>
+420001b8:	00ff07b7          	lui	a5,0xff0
+420001bc:	0ff78713          	addi	a4,a5,255 # ff00ff <STACK_SIZE+0xfefcff>
+420001c0:	06400693          	addi	a3,zero,100
+420001c4:	06400613          	addi	a2,zero,100
+420001c8:	17c00593          	addi	a1,zero,380
+420001cc:	00000513          	addi	a0,zero,0
+420001d0:	ea5ff0ef          	jal	ra,42000074 <draw_block>
+420001d4:	000107b7          	lui	a5,0x10
+420001d8:	fff78713          	addi	a4,a5,-1 # ffff <STACK_SIZE+0xfbff>
+420001dc:	06400693          	addi	a3,zero,100
+420001e0:	06400613          	addi	a2,zero,100
+420001e4:	0be00593          	addi	a1,zero,190
+420001e8:	0e100513          	addi	a0,zero,225
+420001ec:	e89ff0ef          	jal	ra,42000074 <draw_block>
+420001f0:	010007b7          	lui	a5,0x1000
+420001f4:	f0078713          	addi	a4,a5,-256 # ffff00 <STACK_SIZE+0xfffb00>
+420001f8:	06400693          	addi	a3,zero,100
+420001fc:	06400613          	addi	a2,zero,100
+42000200:	0be00593          	addi	a1,zero,190
+42000204:	1db00513          	addi	a0,zero,475
+42000208:	e6dff0ef          	jal	ra,42000074 <draw_block>
+4200020c:	00ff07b7          	lui	a5,0xff0
+42000210:	0ff78713          	addi	a4,a5,255 # ff00ff <STACK_SIZE+0xfefcff>
+42000214:	1e000693          	addi	a3,zero,480
+42000218:	32000613          	addi	a2,zero,800
+4200021c:	00000593          	addi	a1,zero,0
+42000220:	00000513          	addi	a0,zero,0
+42000224:	e51ff0ef          	jal	ra,42000074 <draw_block>
+42000228:	fe042623          	sw	zero,-20(s0)
+4200022c:	06c0006f          	jal	zero,42000298 <main+0x168>
+42000230:	de5ff0ef          	jal	ra,42000014 <rand>
+42000234:	00050793          	addi	a5,a0,0
+42000238:	00078713          	addi	a4,a5,0
+4200023c:	00ff07b7          	lui	a5,0xff0
+42000240:	0ff78793          	addi	a5,a5,255 # ff00ff <STACK_SIZE+0xfefcff>
+42000244:	00f777b3          	and	a5,a4,a5
+42000248:	fef42423          	sw	a5,-24(s0)
+4200024c:	dc9ff0ef          	jal	ra,42000014 <rand>
+42000250:	00050713          	addi	a4,a0,0
+42000254:	2bc00793          	addi	a5,zero,700
+42000258:	02f777b3          	remu	a5,a4,a5
+4200025c:	fef42223          	sw	a5,-28(s0)
+42000260:	db5ff0ef          	jal	ra,42000014 <rand>
+42000264:	00050713          	addi	a4,a0,0
+42000268:	17c00793          	addi	a5,zero,380
+4200026c:	02f777b3          	remu	a5,a4,a5
+42000270:	fef42023          	sw	a5,-32(s0)
+42000274:	fe842703          	lw	a4,-24(s0)
+42000278:	06400693          	addi	a3,zero,100
+4200027c:	06400613          	addi	a2,zero,100
+42000280:	fe042583          	lw	a1,-32(s0)
+42000284:	fe442503          	lw	a0,-28(s0)
+42000288:	dedff0ef          	jal	ra,42000074 <draw_block>
+4200028c:	fec42783          	lw	a5,-20(s0)
+42000290:	00178793          	addi	a5,a5,1
+42000294:	fef42623          	sw	a5,-20(s0)
+42000298:	fec42703          	lw	a4,-20(s0)
+4200029c:	3e800793          	addi	a5,zero,1000
+420002a0:	f8f718e3          	bne	a4,a5,42000230 <main+0x100>
+420002a4:	f69ff06f          	jal	zero,4200020c <main+0xdc>
+420002a8:	0000                	unimp

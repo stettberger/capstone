@@ -29,7 +29,7 @@ static void print_string_hex(char *comment, unsigned char *str, size_t len)
 
 #define RISCV_CODE "\x97\x04\x00\x00\x83\xa4\x44\x03\x97\x09\x00\x00\x83\xa9\x09\x03\x17\x04\x00\x00\x03\x24\x04\x02\x33\x09\x39\x01\x13\x04\x44\x00\x33\x0a\x89\x00\x23\x20\x44\x01\xe3\x54\x94\xfe\x6f\xf0\x1f\xff\x00\x00\x00\x90\x00\x70\x17\x90\x20\x00\x00\x00"
 
-static void read_binary_file(char* filename, char**buffer, int* len)
+static int read_binary_file(char* filename, char**buffer, int* len)
 {
 	FILE *file;
 	char *buf;
@@ -38,8 +38,8 @@ static void read_binary_file(char* filename, char**buffer, int* len)
 	file = fopen(filename, "rb");
 	if (!file)
 	{
-		fprintf(stderr, "Unable to open file %s", filename);
-		return;
+		fprintf(stderr, "Unable to open file %s\n", filename);
+		return 1;
 	}
 
 	fseek(file, 0, SEEK_END);
@@ -47,18 +47,20 @@ static void read_binary_file(char* filename, char**buffer, int* len)
 	fseek(file, 0, SEEK_SET);
 
 	buf = malloc(*len+1);
-	if (!*buf)
+	if (!buf)
 	{
-		fprintf(stderr, "Allocation error!");
+		fprintf(stderr, "Allocation error!\n");
 		*len = 0;
 		fclose(file);
-		return;
+		return 1;
 	}
 
 	//Read file contents into buffer
 	fread(buf, *len, 1, file);
 	fclose(file);
 	*buffer = buf;
+
+	return 0;
 }
 
 static void print_insn_detail(cs_insn *ins)
@@ -102,12 +104,13 @@ static void print_insn_detail(cs_insn *ins)
 
 #define MAX_FILENAME_LEN 256
 
-static void test()
+static int test()
 {
 	char *blocks_buffer;
 	int blocks_len;
 	char *data_dir = getenv("CAPSTONE_TEST_DATA_DIR");
 	char data_file[MAX_FILENAME_LEN];
+	int rc = 0;
 
 	if (data_dir) {
 		snprintf(data_file, MAX_FILENAME_LEN, "%s/%s", data_dir, "riscv_blocks.img");
@@ -115,7 +118,9 @@ static void test()
 		snprintf(data_file, MAX_FILENAME_LEN, "%s", "./test_data/riscv_blocks.img");
 	}
 
-	read_binary_file(data_file, &blocks_buffer, &blocks_len);
+	rc = read_binary_file(data_file, &blocks_buffer, &blocks_len);
+	if (rc)
+		return rc;
 	struct platform platforms[] = {
 		{
 			CS_ARCH_RISCV,
@@ -169,6 +174,7 @@ static void test()
 			printf("Platform: %s\n", platforms[i].comment);
 			print_string_hex("Code:", platforms[i].code, platforms[i].size);
 			printf("ERROR: Failed to disasm given code!\n");
+			rc = 1;
 		}
 
 		// TODO: Check that the last address is as expected
@@ -179,12 +185,12 @@ static void test()
 	}
 
 	free(blocks_buffer);
+
+	return rc;
 }
 
 
 int main(void)
 {
-	test();
-
-	return 0;
+	return test();
 }

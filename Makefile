@@ -248,7 +248,7 @@ DEP_RISCV += arch/riscv/RiscvGenAsmWriter.inc
 DEP_RISCV += arch/riscv/RiscvGenDisassemblerTables.inc
 DEP_RISCV += arch/riscv/RiscvGenInstrInfo.inc
 DEP_RISCV += arch/riscv/RiscvGenRegisterInfo.inc
-DEP_RISCV += arch/riscv/RiscvGenSubtargetInfo.inc
+DEP_RISCV += arch/riscv/RiscvGenSubTargetInfo.inc
 
 ifneq (,$(findstring riscv,$(CAPSTONE_ARCHS)))
 	CFLAGS += -DCAPSTONE_HAS_RISCV

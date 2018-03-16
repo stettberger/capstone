@@ -38,7 +38,7 @@
 // #include "llvm/Support/TargetRegistry.h"
 
 #define GET_SUBTARGETINFO_ENUM
-#include "RiscvGenSubtargetInfo.inc"
+#include "RiscvGenSubTargetInfo.inc"
 
 static uint64_t getFeatureBits(int mode)
 {
@@ -174,7 +174,7 @@ static DecodeStatus DecodeSImmOperandAndLsl1_21(MCInst *Inst, uint64_t Imm,
 }
 
 
-#include "RISCVGenDisassemblerTables.inc"
+#include "RiscvGenDisassemblerTables.inc"
 
 static DecodeStatus readInstruction32(unsigned char *code, uint32_t *insn, bool isBigEndian)
 {

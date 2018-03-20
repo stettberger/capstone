@@ -284,7 +284,7 @@ if (CAPSTONE_RISCV_SUPPORT)
         arch/riscv/RiscvGenDisassemblerTables.inc
         arch/riscv/RiscvGenInstrInfo.inc
         arch/riscv/RiscvGenRegisterInfo.inc
-        arch/riscv/RiscvGenSubtargetInfo.inc
+        arch/riscv/RiscvGenSubTargetInfo.inc
         arch/riscv/RiscvInstPrinter.h
         arch/riscv/RiscvMapping.h
         )

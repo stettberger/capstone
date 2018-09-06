@@ -149,7 +149,7 @@ static DecodeStatus DecodeSImmOperand_12(MCInst *Inst, uint64_t Imm,
 										 int64_t Address,
 										 const MCRegisterInfo *Decoder) {
 	// Sign-extend the number in the bottom N = 12 bits of Imm
-	MCOperand_CreateImm0(Inst, SignExtend32(Imm, 12)); // TODO: support 64 bits
+	MCOperand_CreateImm0(Inst, SignExtend64(Imm, 12));
 	return MCDisassembler_Success;
 }
 
@@ -159,7 +159,7 @@ static DecodeStatus DecodeSImmOperandAndLsl1_13(MCInst *Inst, uint64_t Imm,
 	// Sign-extend the number in the bottom N bits of Imm after accounting for
 	// the fact that the N=13 bit immediate is stored in N-1 bits (the LSB is
 	// always zero)
-	MCOperand_CreateImm0(Inst, SignExtend32((Imm << 1), 13)); // TODO: support 64 bits
+	MCOperand_CreateImm0(Inst, SignExtend64((Imm << 1), 13));
 	return MCDisassembler_Success;
 }
 
@@ -169,7 +169,7 @@ static DecodeStatus DecodeSImmOperandAndLsl1_21(MCInst *Inst, uint64_t Imm,
 	// Sign-extend the number in the bottom N bits of Imm after accounting for
 	// the fact that the N=21 bit immediate is stored in N-1 bits (the LSB is
 	// always zero)
-	MCOperand_CreateImm0(Inst, SignExtend32((Imm << 1), 21)); // TODO: support 64 bits
+	MCOperand_CreateImm0(Inst, SignExtend64((Imm << 1), 21));
 	return MCDisassembler_Success;
 }
 
@@ -238,7 +238,7 @@ bool RISCV_getInstruction(csh ud, const uint8_t *code, size_t code_len, MCInst *
 bool RISCV64_getInstruction(csh ud, const uint8_t *code, size_t code_len, MCInst *instr,
 							uint16_t *size, uint64_t address, void *info)
 {
-	return false; // TODO: 64 bit mode
+	return RISCV_getInstruction(ud, code, code_len, instr, size, address, info);
 }
 
 #define GET_REGINFO_MC_DESC

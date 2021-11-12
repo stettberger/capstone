@@ -4,8 +4,7 @@
 ################################################################################
 # Specify which archs you want to compile in. By default, we build all archs.
 
-CAPSTONE_ARCHS ?= arm aarch64 mips powerpc sparc systemz x86 xcore riscv
-
+CAPSTONE_ARCHS ?= arm aarch64 m68k mips powerpc sparc systemz x86 xcore riscvtms320c64x m680x evm mos65xx
 
 ################################################################################
 # Comment out the line below ('CAPSTONE_USE_SYS_DYN_MEM = yes'), or change it to

@@ -26,6 +26,8 @@
 #include "../../SStream.h"
 
 #include "../../MathExtras.h"
+#include "RiscvDisassembler.h"
+
 
 // #include "MCTargetDesc/RISCVMCTargetDesc.h"
 // #include "llvm/MC/MCContext.h"

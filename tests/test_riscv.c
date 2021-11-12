@@ -3,7 +3,7 @@
 #include <assert.h>
 
 #include <platform.h>
-#include <capstone.h>
+#include <capstone/capstone.h>
 
 struct platform {
 	cs_arch arch;
@@ -115,7 +115,7 @@ static int test()
 	if (data_dir) {
 		snprintf(data_file, MAX_FILENAME_LEN, "%s/%s", data_dir, "riscv_blocks.img");
 	} else {
-		snprintf(data_file, MAX_FILENAME_LEN, "%s", "./test_data/riscv_blocks.img");
+		snprintf(data_file, MAX_FILENAME_LEN, "%s", "./tests/data/riscv_blocks.img");
 	}
 
 	rc = read_binary_file(data_file, &blocks_buffer, &blocks_len);

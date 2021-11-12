@@ -323,9 +323,9 @@ static const uint8_t FPR64Bits[] = {
 };
 
 static const MCRegisterClass RISCVMCRegisterClasses[] = {
-	{ "FPR32", FPR32, FPR32Bits, 32, sizeof(FPR32Bits), RISCV_FPR32RegClassID, 4, 4, 1, 1 },
-	{ "GPR", GPR, GPRBits, 32, sizeof(GPRBits), RISCV_GPRRegClassID, 0, 0, 1, 1 }, // RegSize and Alignment aren't used. Set to 0 as a dummy value.
-	{ "FPR64", FPR64, FPR64Bits, 32, sizeof(FPR64Bits), RISCV_FPR64RegClassID, 8, 8, 1, 1 },
+	{ FPR32, FPR32Bits, 32, sizeof(FPR32Bits), RISCV_FPR32RegClassID, 4, 4, 1, 1 },
+	{ GPR, GPRBits, 32, sizeof(GPRBits), RISCV_GPRRegClassID, 0, 0, 1, 1 }, // RegSize and Alignment aren't used. Set to 0 as a dummy value.
+	{ FPR64, FPR64Bits, 32, sizeof(FPR64Bits), RISCV_FPR64RegClassID, 8, 8, 1, 1 },
 };
 
 #endif // GET_REGINFO_MC_DESC

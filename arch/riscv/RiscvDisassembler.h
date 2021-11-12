@@ -1,9 +1,8 @@
 #ifndef CS_RISCVDISASSEMBLER_H
 #define CS_RISCVDISASSEMBLER_H
 
-#include "../../include/capstone.h"
+#include "capstone/capstone.h"
 
-#include "../../include/capstone.h"
 #include "../../MCRegisterInfo.h"
 
 void RISCV_init(MCRegisterInfo *MRI);
